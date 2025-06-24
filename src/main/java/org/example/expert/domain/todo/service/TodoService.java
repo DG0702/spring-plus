@@ -11,15 +11,19 @@ import org.example.expert.domain.todo.entity.Todo;
 import org.example.expert.domain.todo.repository.TodoRepository;
 import org.example.expert.domain.user.dto.response.UserResponse;
 import org.example.expert.domain.user.entity.User;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+
+
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
+@Transactional
 public class TodoService {
 
     private final TodoRepository todoRepository;
@@ -47,8 +51,49 @@ public class TodoService {
         );
     }
 
-    public Page<TodoResponse> getTodos(int page, int size) {
+    public Page<TodoResponse> getTodos(int page, int size, String weather, LocalDateTime startTime, LocalDateTime endTime) {
         Pageable pageable = PageRequest.of(page - 1, size);
+
+        if((weather != null) && (startTime != null) && (endTime != null)) {
+            Page<Todo> todos = todoRepository.findAllByWeatherAndModifiedAtBetween(weather, startTime, endTime, pageable);
+            return todos.map(todo -> new TodoResponse(
+                    todo.getId(),
+                    todo.getTitle(),
+                    todo.getContents(),
+                    todo.getWeather(),
+                    new UserResponse(todo.getUser().getId(), todo.getUser().getEmail()),
+                    todo.getCreatedAt(),
+                    todo.getModifiedAt()
+            ));
+        }
+
+        if((weather != null) && (!weather.isEmpty())){
+            Page<Todo> todos = todoRepository.findAllByWeather(weather,pageable);
+            return todos.map(todo -> new TodoResponse(
+                    todo.getId(),
+                    todo.getTitle(),
+                    todo.getContents(),
+                    todo.getWeather(),
+                    new UserResponse(todo.getUser().getId(), todo.getUser().getEmail()),
+                    todo.getCreatedAt(),
+                    todo.getModifiedAt()
+            ));
+        }
+
+        if((startTime != null) && (endTime != null)) {
+            Page<Todo> todos = todoRepository.findAllByModifiedAtBetween(startTime,endTime,pageable);
+            return todos.map(todo -> new TodoResponse(
+                    todo.getId(),
+                    todo.getTitle(),
+                    todo.getContents(),
+                    todo.getWeather(),
+                    new UserResponse(todo.getUser().getId(), todo.getUser().getEmail()),
+                    todo.getCreatedAt(),
+                    todo.getModifiedAt()
+            ));
+        }
+
+
 
         Page<Todo> todos = todoRepository.findAllByOrderByModifiedAtDesc(pageable);
 
