@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: expert
+
+jwt:
+  secret:
+    key: ${SECRET_KEY}
