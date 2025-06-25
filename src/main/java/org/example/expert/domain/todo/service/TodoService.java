@@ -29,6 +29,7 @@ public class TodoService {
     private final TodoRepository todoRepository;
     private final WeatherClient weatherClient;
 
+
     public TodoSaveResponse saveTodo(AuthUser authUser, TodoSaveRequest todoSaveRequest) {
         User user = User.fromAuthUser(authUser);
 
@@ -55,7 +56,7 @@ public class TodoService {
         Pageable pageable = PageRequest.of(page - 1, size);
 
         if((weather != null) && (startTime != null) && (endTime != null)) {
-            Page<Todo> todos = todoRepository.findAllByWeatherAndModifiedAtBetween(weather, startTime, endTime, pageable);
+            Page<Todo> todos = todoRepository.allCase(weather, startTime, endTime, pageable);
             return todos.map(todo -> new TodoResponse(
                     todo.getId(),
                     todo.getTitle(),
@@ -68,7 +69,7 @@ public class TodoService {
         }
 
         if((weather != null) && (!weather.isEmpty())){
-            Page<Todo> todos = todoRepository.findAllByWeather(weather,pageable);
+            Page<Todo> todos = todoRepository.onlyWeather(weather,pageable);
             return todos.map(todo -> new TodoResponse(
                     todo.getId(),
                     todo.getTitle(),
@@ -81,7 +82,7 @@ public class TodoService {
         }
 
         if((startTime != null) && (endTime != null)) {
-            Page<Todo> todos = todoRepository.findAllByModifiedAtBetween(startTime,endTime,pageable);
+            Page<Todo> todos = todoRepository.caseDate(startTime,endTime,pageable);
             return todos.map(todo -> new TodoResponse(
                     todo.getId(),
                     todo.getTitle(),
@@ -95,7 +96,7 @@ public class TodoService {
 
 
 
-        Page<Todo> todos = todoRepository.findAllByOrderByModifiedAtDesc(pageable);
+        Page<Todo> todos = todoRepository.noCase(pageable);
 
         return todos.map(todo -> new TodoResponse(
                 todo.getId(),
@@ -109,7 +110,7 @@ public class TodoService {
     }
 
     public TodoResponse getTodo(long todoId) {
-        Todo todo = todoRepository.findByIdWithUser(todoId)
+        Todo todo = todoRepository.oneCase(todoId)
                 .orElseThrow(() -> new InvalidRequestException("Todo not found"));
 
         User user = todo.getUser();

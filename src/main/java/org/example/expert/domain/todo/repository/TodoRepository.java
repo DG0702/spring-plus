@@ -3,37 +3,23 @@ package org.example.expert.domain.todo.repository;
 import org.example.expert.domain.todo.entity.Todo;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-public interface TodoRepository extends JpaRepository<Todo, Long> {
+public interface TodoRepository {
 
-    @Query("SELECT t FROM Todo t LEFT JOIN FETCH t.user u ORDER BY t.modifiedAt DESC")
-    Page<Todo> findAllByOrderByModifiedAtDesc(Pageable pageable);
+    Todo save(Todo todo);
 
-    @Query("SELECT t FROM Todo t LEFT JOIN FETCH t.user u WHERE t.weather = :weather")
-    Page<Todo> findAllByWeather(@Param("weather") String weather,
-                                Pageable pageable);
+    Optional<Todo> findById(Long todoId);
 
-    @Query("SELECT t FROM Todo t LEFT JOIN FETCH t.user u " +
-            "WHERE t.modifiedAt BETWEEN :startTime AND :endTime")
-    Page<Todo> findAllByModifiedAtBetween(@Param("startTime")LocalDateTime startTime,
-                                          @Param("endTime")LocalDateTime endTime,
-                                          Pageable pageable);
+    Page<Todo> allCase(String weather, LocalDateTime startTime, LocalDateTime endTime, Pageable pageable);
 
-    @Query("SELECT t FROM Todo t LEFT JOIN FETCH t.user u " +
-            "WHERE t.weather = :weather AND t.modifiedAt BETWEEN :startTime AND :endTime")
-    Page<Todo> findAllByWeatherAndModifiedAtBetween(@Param("weather") String weather,
-                                                    @Param("startTime")LocalDateTime startTime,
-                                                    @Param("endTime")LocalDateTime endTime,
-                                                    Pageable pageable);
+    Page<Todo> onlyWeather(String weather, Pageable pageable);
 
-    @Query("SELECT t FROM Todo t " +
-            "LEFT JOIN t.user " +
-            "WHERE t.id = :todoId")
-    Optional<Todo> findByIdWithUser(@Param("todoId") Long todoId);
+    Page<Todo> caseDate(LocalDateTime startTime, LocalDateTime endTime, Pageable pageable);
+
+    Page<Todo> noCase(Pageable pageable);
+
+    Optional<Todo> oneCase(long todoId);
 }
