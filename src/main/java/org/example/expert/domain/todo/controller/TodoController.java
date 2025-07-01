@@ -3,7 +3,9 @@ package org.example.expert.domain.todo.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.expert.domain.common.dto.AuthUser;
+import org.example.expert.domain.todo.dto.request.SearchRequest;
 import org.example.expert.domain.todo.dto.request.TodoSaveRequest;
+import org.example.expert.domain.todo.dto.response.SearchResponse;
 import org.example.expert.domain.todo.dto.response.TodoResponse;
 import org.example.expert.domain.todo.dto.response.TodoSaveResponse;
 import org.example.expert.domain.todo.service.TodoService;
@@ -46,5 +48,15 @@ public class TodoController {
     @GetMapping("/todos/{todoId}")
     public ResponseEntity<TodoResponse> getTodo(@PathVariable long todoId) {
         return ResponseEntity.ok(todoService.getTodo(todoId));
+    }
+
+    @GetMapping("/todos/search")
+    public ResponseEntity<Page<SearchResponse>> search(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestBody SearchRequest searchRequest){
+
+        return ResponseEntity.ok(todoService.search(page,size, searchRequest));
+
     }
 }

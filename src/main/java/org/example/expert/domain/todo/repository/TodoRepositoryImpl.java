@@ -1,6 +1,7 @@
 package org.example.expert.domain.todo.repository;
 
 import lombok.RequiredArgsConstructor;
+import org.example.expert.domain.todo.dto.response.SearchResponse;
 import org.example.expert.domain.todo.entity.Todo;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -49,5 +50,10 @@ public class TodoRepositoryImpl implements TodoRepository{
     @Override
     public Optional<Todo> oneCase(long todoId) {
         return queryDslRepository.getTodo(todoId);
+    }
+
+    @Override
+    public Page<SearchResponse> search(String keyword, LocalDateTime startTime, LocalDateTime endTime, Pageable pageable) {
+        return queryDslRepository.search(keyword,startTime,endTime,pageable);
     }
 }
