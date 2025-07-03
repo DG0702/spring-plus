@@ -31,6 +31,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
     // 공개 API 리스트
     private static final List<String> PUBLIC_PATH = List.of(
+            "/health",
             "/auth/signup",
             "/auth/signin"
     );
