@@ -45,6 +45,19 @@
 
 - **AWS EC2 인스턴스 연걸(Health Check API)**
 
+<hr>
+
+## 환경변수 설정 
+
+```
+DB_URL=jdbc:mysql://localhost:3306/yourschemaname
+DB_USERNAME=yourusername
+DB_PASSWORD=youruserpassword
+SECRET_KEY=your_jwt_secret_key
+```
+
+<hr>
+
 ## 📜 주요 API 명세서
 
 ### 인증 API
