@@ -15,7 +15,7 @@ public interface TodoJpaRepository extends JpaRepository<Todo, Long> {
     @Query("SELECT t FROM Todo t LEFT JOIN FETCH t.user u ORDER BY t.modifiedAt DESC")
     Page<Todo> findAllByOrderByModifiedAtDesc(Pageable pageable);
 
-    @Query("SELECT t FROM Todo t LEFT JOIN FETCH t.user u WHERE t.weather = :weather")
+    @Query("SELECT t FROM Todo t LEFT JOIN FETCH t.user u WHERE t.weather LIKE CONCAT('%', :weather, '%' ) ")
     Page<Todo> findAllByWeather(@Param("weather") String weather,
                                 Pageable pageable);
 
@@ -26,7 +26,7 @@ public interface TodoJpaRepository extends JpaRepository<Todo, Long> {
                                           Pageable pageable);
 
     @Query("SELECT t FROM Todo t LEFT JOIN FETCH t.user u " +
-            "WHERE t.weather = :weather AND t.modifiedAt BETWEEN :startTime AND :endTime")
+            "WHERE t.weather LIKE CONCAT('%' ,:weather, '%')  AND t.modifiedAt BETWEEN :startTime AND :endTime")
     Page<Todo> findAllByWeatherAndModifiedAtBetween(@Param("weather") String weather,
                                                     @Param("startTime")LocalDateTime startTime,
                                                     @Param("endTime")LocalDateTime endTime,
